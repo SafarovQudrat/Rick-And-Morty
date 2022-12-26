@@ -25,11 +25,29 @@ class MainVC: UIViewController {
         
     }
 
+    func getData() {
+        API.getCharacterData { data in
+            guard let data = data else {return}
+            self.arr = data
+            self.setUpCollectionView()
+        }
+    }
+    
+    
+    
+    
+    
+    
    
 }
 //MARK: - UICollectionViewDelegate
 extension MainVC:UICollectionViewDelegate {
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let vc = InfoVC(nibName: "InfoVC", bundle: nil)
+        vc.url = self.arr[indexPath.item].url
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
 }
 //MARK: - UICollectionViewDataSource
 extension MainVC:UICollectionViewDataSource {
@@ -52,25 +70,25 @@ extension MainVC:UICollectionViewDelegateFlowLayout {
     }
     
 }
-extension MainVC {
-    func getData(){
-        let url = "https://rickandmortyapi.com/api/character"
-        
-        AF.request(url,method: .get,parameters: nil,encoding: URLEncoding.default,headers: nil).responseData { response in
-            
-            switch response.result {
-            case.success(let data):
-                let jsonData = JSON(data)
-//               print("jsonData=",jsonData)
-                let info = jsonData["results"].array
-                guard let info = info else {return}
-                self.arr = info.map{DataDM(json: $0)}
-                self.setUpCollectionView()
-            case.failure(let error):
-                print("error:",error.localizedDescription)
-                
-            }
-        }
-    }
-}
-
+//extension MainVC {
+//    func getData(){
+//        let url = "https://rickandmortyapi.com/api/character"
+//
+//        AF.request(url,method: .get,parameters: nil,encoding: URLEncoding.default,headers: nil).responseData { response in
+//
+//            switch response.result {
+//            case.success(let data):
+//                let jsonData = JSON(data)
+////               print("jsonData=",jsonData)
+//                let info = jsonData["results"].array
+//                guard let info = info else {return}
+//                self.arr = info.map{DataDM(json: $0)}
+//                self.setUpCollectionView()
+//            case.failure(let error):
+//                print("error:",error.localizedDescription)
+//
+//            }
+//        }
+//    }
+//}
+//

@@ -6,24 +6,45 @@
 //
 
 import UIKit
+import Alamofire
+import SwiftyJSON
 
 class InfoVC: UIViewController {
-
+    
+    @IBOutlet weak var locationLbl: UILabel!
+    @IBOutlet weak var lbl: UILabel!
+    @IBOutlet weak var textLbl: UILabel!
+    @IBOutlet weak var imageV: UIImageView!
+    @IBOutlet weak var firstSeenLbl: UILabel!
+    @IBOutlet weak var colorV: UIView!
+    var arr:DataDM!
+    var url:String = ""
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        colorV.layer.cornerRadius = colorV.frame.height/2
+        getInfo()
     }
 
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func getInfo() {
+        
+        API.getCharacterInfo(url: url) { data in
+            guard let data = data else {return}
+            print("data=",data)
+            self.arr = data
+                self.imageV.sd_setImage(with: URL(string: data.image))
+                self.textLbl.text = data.text
+                self.locationLbl.text = data.location
+                self.lbl.text = data.lbl
+                self.firstSeenLbl.text = data.firstSeen
+            if data.backcolor == "Dead" {
+                self.colorV.backgroundColor = .red
+            }else if data.backcolor == "Alive" {
+                self.colorV.backgroundColor = .green
+            }else {
+                self.colorV.backgroundColor = .gray
+            }
+        }
     }
-    */
 
 }
